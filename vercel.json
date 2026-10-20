@@ -1,8 +1,6 @@
 {
-  "crons": [
-    {
-      "path": "/api/cron/social-publish",
-      "schedule": "0 5 * * *"
-    }
-  ]
+  "version": 2,
+  "public": true,
+  "cleanUrls": true,
+  "trailingSlash": false
 }

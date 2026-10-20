@@ -1,0 +1,36 @@
+name: CI IndiaMART AI Content & Catalog Generator
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Verify package.json and templates
+        run: |
+          node -e "
+          const pkg = require('./package.json');
+          console.log('Valid package:', pkg.name, 'v' + pkg.version);
+          "
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+      - name: Validate build
+        env:
+          NEXT_TELEMETRY_DISABLED: 1
+        run: npm run build
+      - name: Verify zip automation templates
+        run: |
+          python -c "
+          import zipfile, glob
+          zips = glob.glob('*.zip')
+          for z in zips:
+              with zipfile.ZipFile(z, 'r') as zf:
+                  print(f'Zip archive {z} verified ({len(zf.namelist())} files)')
+          "
